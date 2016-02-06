@@ -26,7 +26,7 @@ In order to start a project build clone this project to your development machine
 $ mvn clean package
 
 After a few minutes and if everything goes well you will se the following output:
-
+```
 [INFO] ------------------------------------------------------------------------
 [INFO] Reactor Summary:
 [INFO]
@@ -42,6 +42,6 @@ After a few minutes and if everything goes well you will se the following output
 [INFO] Finished at: Sun Feb 07 02:34:52 EST 2016
 [INFO] Final Memory: 43M/254M
 [INFO] ------------------------------------------------------------------------
-
+```
 
 
