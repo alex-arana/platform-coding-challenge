@@ -1,0 +1,4 @@
+http://www.google.com
+www.facebook.com:443
+https://twitter.com
+www.xkcd.com/443?foo=bar

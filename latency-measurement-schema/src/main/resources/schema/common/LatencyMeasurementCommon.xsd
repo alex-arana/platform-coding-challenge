@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.commbank.com.au/platform/coding/challenge/common/dataTypes"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:tns="http://www.commbank.com.au/platform/coding/challenge/common/dataTypes"
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+    attributeFormDefault="unqualified"
+    elementFormDefault="qualified"
+    jaxb:version="2.0">
+
+    <xsd:simpleType name="JodaDate">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:javaType name="org.joda.time.DateTime"
+                    parseMethod="au.com.commbank.latency.measurement.schema.util.JodaDateTimeAdapter.parseDate"
+                    printMethod="au.com.commbank.latency.measurement.schema.util.JodaDateTimeAdapter.printDate" />
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:date" />
+    </xsd:simpleType>
+
+    <xsd:simpleType name="JodaDateTime">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:javaType name="org.joda.time.DateTime"
+                    parseMethod="au.com.commbank.latency.measurement.schema.util.JodaDateTimeAdapter.parseDateTime"
+                    printMethod="au.com.commbank.latency.measurement.schema.util.JodaDateTimeAdapter.printDateTime" />
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:dateTime" />
+    </xsd:simpleType>
+
+    <xsd:complexType name="ErrorResponseDto">
+        <xsd:sequence>
+            <xsd:element name="code" type="xsd:string" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="httpStatus" type="xsd:int" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="reasonPhrase" type="xsd:string" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="message" type="xsd:string" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="module" type="xsd:string" minOccurs="0" maxOccurs="1" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <!-- XML root elements -->
+    <xsd:element name="errorResponseDto" type="tns:ErrorResponseDto" />
+
+</xsd:schema>

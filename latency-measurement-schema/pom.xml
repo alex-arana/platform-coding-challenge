@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <groupId>au.com.commbank</groupId>
+        <artifactId>platform.coding.challenge</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <name>Latency Measurement Schema</name>
+    <artifactId>latency-measurement-schema</artifactId>
+    <description>Latency Measurement Service Schema Model.</description>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jvnet.jaxb2_commons</groupId>
+            <artifactId>jaxb2-basics-runtime</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jvnet.jaxb2.maven2</groupId>
+                <artifactId>maven-jaxb2-plugin</artifactId>
+                <version>0.13.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <generatePackage>au.com.commbank.platform.coding.challenge.schema.v1.dto</generatePackage>
+                    <generateDirectory>${project.build.directory}/generated-sources</generateDirectory>
+                    <bindingDirectory>${project.basedir}/src/main/resources/bindings</bindingDirectory>
+                    <schemaDirectory>${project.basedir}/src/main/resources/schema</schemaDirectory>
+                    <schemaIncludes>
+                        <schemaInclude>**/*.xsd</schemaInclude>
+                    </schemaIncludes>
+                    <bindingIncludes>
+                        <include>bindings.xjb</include>
+                    </bindingIncludes>
+                    <extension>true</extension>
+                    <args>
+                        <arg>-Xsetters</arg>
+                    </args>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.jvnet.jaxb2_commons</groupId>
+                            <artifactId>jaxb2-basics</artifactId>
+                            <version>0.11.0</version>
+                        </plugin>
+                    </plugins>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

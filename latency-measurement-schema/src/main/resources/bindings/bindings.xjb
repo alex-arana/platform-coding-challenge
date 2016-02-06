@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jaxb:bindings version="2.0"
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+    jaxb:extensionBindingPrefixes="xjc">
+
+    <jaxb:globalBindings underscoreBinding="asCharInWord">
+        <xjc:simple />
+        <jaxb:serializable uid="1" />
+
+        <!-- custom data type bindings -->
+        <jaxb:javaType name="org.joda.time.DateTime" xmlType="xs:date"
+                       parseMethod="au.com.commbank.latency.measurement.schema.util.JodaDateTimeAdapter.parseDate"
+                       printMethod="au.com.commbank.latency.measurement.schema.util.JodaDateTimeAdapter.printDate" />
+        <jaxb:javaType name="org.joda.time.DateTime" xmlType="xs:dateTime"
+                       parseMethod="au.com.commbank.latency.measurement.schema.util.JodaDateTimeAdapter.parseDateTime"
+                       printMethod="au.com.commbank.latency.measurement.schema.util.JodaDateTimeAdapter.printDateTime" />
+        <jaxb:javaType name="java.lang.Double" xmlType="xs:double" />
+        <jaxb:javaType name="java.lang.Long" xmlType="xs:long" />
+        <jaxb:javaType name="java.lang.Integer" xmlType="xs:integer" />
+        <jaxb:javaType name="java.lang.Integer" xmlType="xs:int" />
+
+        <!-- base class for all generated POJOs -->
+        <xjc:superClass name="au.com.commbank.latency.measurement.schema.dto.AbstractRestDto" />
+    </jaxb:globalBindings>
+
+</jaxb:bindings>
