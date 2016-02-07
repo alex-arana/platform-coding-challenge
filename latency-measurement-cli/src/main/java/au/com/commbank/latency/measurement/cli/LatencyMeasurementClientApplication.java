@@ -1,5 +1,8 @@
 package au.com.commbank.latency.measurement.cli;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,11 +11,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.google.common.base.Charsets;
 import au.com.commbank.latency.measurement.cli.service.LatencyMeasurementService;
+import lombok.SneakyThrows;
 
 
 /**
@@ -23,6 +29,10 @@ import au.com.commbank.latency.measurement.cli.service.LatencyMeasurementService
 public class LatencyMeasurementClientApplication implements CommandLineRunner {
     private static final Logger LOG = LoggerFactory.getLogger(LatencyMeasurementClientApplication.class);
     private static final String DEFAULT_INPUT_FILE = "URL.txt";
+    private static final String DEFAULT_OUTPUT_FILE = "latency.json";
+
+    @Inject
+    private Environment environment;
 
     @Inject
     private LatencyMeasurementService latencyMeasurementService;
@@ -45,14 +55,15 @@ public class LatencyMeasurementClientApplication implements CommandLineRunner {
      * {@inheritDoc}
      */
     @Override
+    @SneakyThrows
     public void run(final String... args) {
-        String inputFile = DEFAULT_INPUT_FILE;
-        if (args.length > 1 && args[0].equals("input")) {
-            inputFile = args[1];
-        }
-
+        final String inputFile = environment.getProperty("input", DEFAULT_INPUT_FILE);
         final String jsonString = latencyMeasurementService.getRoundTripLatency(inputFile);
         LOG.info("LatencyMeasurementService returned {}", jsonString);
+
+        final Path outputFile = Paths.get(environment.getProperty("output", DEFAULT_OUTPUT_FILE));
+        Files.write(outputFile, jsonString.getBytes(Charsets.UTF_8));
+        LOG.info("Latency measurement results have been saved to file '{}'", outputFile.toAbsolutePath());
     }
 
     /**
