@@ -59,8 +59,6 @@ You can check if the application backend has started successfully by opening the
 
 [http://localhost:8080/latency-measurement-endpoint/swagger-ui/index.html](http://localhost:8080/latency-measurement-endpoint/swagger-ui/index.html#!/latency-measurement-service-operations/getRoundTripLatency)
 
-If you want to change the port on which the web server is run you will need to modify the run script (run.sh) located in the latency-measurement-endpoint subfolder. Accordingly, you also need to modify the web service URL which is part of the CLI configuration within latency-measurement-cli/application.properties.
-
 2. At the top-level directory run the following command to start the embedded web server which launches the client application:
 
 ```
@@ -138,5 +136,13 @@ If the program has run successfully you should see something resembling the foll
 
 ```
 
+## Additional Notes
 
+- If you want to change the port on which the web server is run you will need to modify the run script (run.sh) located in the `latency-measurement-endpoint` subfolder. Accordingly, you also need to modify the web service URL which is part of the CLI configuration within `latency-measurement-cli/application.properties`.
+
+- By default, the CLI program uses a file called `URL.txt` as input and it creates or writes to an output file called `latency.json`. If you wish to change either of those parameters you can do so by modifying the CLI run script (run.sh) to add the following parameters:
+
+```
+mvn clean package spring-boot:run --input="path_to_input_file" --output="path_to_output_file"
+```
 
