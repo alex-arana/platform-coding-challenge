@@ -1,5 +1,8 @@
 package au.com.commbank.latency.measurement.endpoint.controller.impl;
 
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toList;
+import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
@@ -72,15 +75,19 @@ public class LatencyMeasurementControllerImpl implements LatencyMeasurementContr
         @ApiParam(required = true, value = "Network latency parameters including URL and count.")
         @RequestBody(required = true) final BatchLatencyMeasurementRequest request) {
 
-        LOG.info("getBatchRoundTripLatency() invoked using the following parameters: {}", request);
+        LOG.info("getBatchRoundTripLatency() invoked using the following parameter: {}", request);
         final BatchLatencyMeasurementResponse response = new BatchLatencyMeasurementResponse();
         final List<LatencyMeasurementRequest> requestParameters = request.getParameters();
         if (CollectionUtils.isNotEmpty(requestParameters)) {
-            final List<LatencyMeasurementResponse> responses = response.getResponses();
             if (useParallelism) {
-                requestParameters.stream().parallel().forEach(it -> responses.add(getRoundTripLatency(it)));
+                response.setResponses(requestParameters.parallelStream()
+                    .map(this::getRoundTripLatency)
+                    .collect(collectingAndThen(toList(), Collections::unmodifiableList)));
             } else {
-                requestParameters.stream().forEach(it -> responses.add(getRoundTripLatency(it)));
+                requestParameters.stream().forEach(it -> {
+                    final List<LatencyMeasurementResponse> responses = response.getResponses();
+                    responses.add(getRoundTripLatency(it));
+                });
             }
         }
 
