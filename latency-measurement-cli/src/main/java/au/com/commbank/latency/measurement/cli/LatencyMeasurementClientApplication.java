@@ -1,5 +1,6 @@
 package au.com.commbank.latency.measurement.cli;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,7 +19,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.google.common.base.Charsets;
 import au.com.commbank.latency.measurement.cli.service.LatencyMeasurementService;
-import lombok.SneakyThrows;
 
 
 /**
@@ -55,8 +55,7 @@ public class LatencyMeasurementClientApplication implements CommandLineRunner {
      * {@inheritDoc}
      */
     @Override
-    @SneakyThrows
-    public void run(final String... args) {
+    public void run(final String... args) throws IOException {
         final String inputFile = environment.getProperty("input", DEFAULT_INPUT_FILE);
         final String jsonString = latencyMeasurementService.getRoundTripLatency(inputFile);
         LOG.info("LatencyMeasurementService returned {}", jsonString);
