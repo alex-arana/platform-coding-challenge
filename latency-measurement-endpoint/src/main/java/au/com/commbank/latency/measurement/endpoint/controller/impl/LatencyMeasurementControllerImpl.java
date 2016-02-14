@@ -1,12 +1,13 @@
 package au.com.commbank.latency.measurement.endpoint.controller.impl;
 
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
-import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -75,23 +76,20 @@ public class LatencyMeasurementControllerImpl implements LatencyMeasurementContr
         @ApiParam(required = true, value = "Network latency parameters including URL and count.")
         @RequestBody(required = true) final BatchLatencyMeasurementRequest request) {
 
-        LOG.info("getBatchRoundTripLatency() invoked using the following parameter: {}", request);
+        LOG.info("getBatchRoundTripLatency() invoked using the following request: {}", request);
         final BatchLatencyMeasurementResponse response = new BatchLatencyMeasurementResponse();
-        final List<LatencyMeasurementRequest> requestParameters = request.getParameters();
-        if (CollectionUtils.isNotEmpty(requestParameters)) {
-            if (useParallelism) {
-                response.setResponses(requestParameters.parallelStream()
-                    .map(this::getRoundTripLatency)
-                    .collect(collectingAndThen(toList(), Collections::unmodifiableList)));
-            } else {
-                requestParameters.stream().forEach(it -> {
-                    final List<LatencyMeasurementResponse> responses = response.getResponses();
-                    responses.add(getRoundTripLatency(it));
-                });
-            }
-        }
+        response.setResponses(
+            Optional.ofNullable(request.getParameters()).map(this::processRequests).orElse(emptyList()));
 
         LOG.debug("getBatchRoundTripLatency() returned the following response(s): {}", response);
         return response;
+    }
+
+    private List<LatencyMeasurementResponse> processRequests(final List<LatencyMeasurementRequest> list) {
+        return useParallelism
+            ? list.parallelStream().map(this::getRoundTripLatency)
+                .collect(collectingAndThen(toList(), Collections::unmodifiableList))
+            : list.stream().map(this::getRoundTripLatency)
+                .collect(collectingAndThen(toList(), Collections::unmodifiableList));
     }
 }
