@@ -16,6 +16,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.google.common.base.Charsets;
 import au.com.commbank.latency.measurement.cli.service.LatencyMeasurementService;
@@ -45,8 +46,9 @@ public class LatencyMeasurementClientApplication implements CommandLineRunner {
     @Bean
     public ObjectMapper objectMapper() {
         final ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        objectMapper.setDateFormat(new ISO8601DateFormat());
         objectMapper.registerModule(new JodaModule());
         return objectMapper;
     }
