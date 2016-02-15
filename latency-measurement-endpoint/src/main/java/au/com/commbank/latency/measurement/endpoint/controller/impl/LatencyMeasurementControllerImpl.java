@@ -77,8 +77,7 @@ public class LatencyMeasurementControllerImpl implements LatencyMeasurementContr
         @RequestBody(required = true) final BatchLatencyMeasurementRequest request) {
 
         LOG.info("getBatchRoundTripLatency() invoked using the following request: {}", request);
-        final BatchLatencyMeasurementResponse response = new BatchLatencyMeasurementResponse();
-        response.setResponses(
+        final BatchLatencyMeasurementResponse response = new BatchLatencyMeasurementResponse(
             Optional.ofNullable(request.getParameters()).map(this::processRequests).orElse(emptyList()));
 
         LOG.debug("getBatchRoundTripLatency() returned the following response(s): {}", response);

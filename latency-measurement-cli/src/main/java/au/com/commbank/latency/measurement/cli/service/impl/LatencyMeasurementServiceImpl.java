@@ -1,10 +1,13 @@
 package au.com.commbank.latency.measurement.cli.service.impl;
 
 import static java.lang.invoke.MethodHandles.lookup;
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toList;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -47,16 +50,14 @@ public class LatencyMeasurementServiceImpl implements LatencyMeasurementService 
 
             final List<String> lines = Files.readAllLines(path);
             final BatchLatencyMeasurementRequest request = new BatchLatencyMeasurementRequest();
-            lines.stream().forEach(line -> {
-                final LatencyMeasurementRequest parameter = new LatencyMeasurementRequest();
-                parameter.setTargetUrl(line);
-                request.getParameters().add(parameter);
-            });
+            request.setParameters(lines.stream()
+                .map(url -> new LatencyMeasurementRequest(url, null))
+                .collect(collectingAndThen(toList(), Collections::unmodifiableList)));
 
             final String url = serviceBaseUrl + "/v1/latency/batchroundtrip";
             final BatchLatencyMeasurementResponse result =
                 restTemplate.postForObject(url, request, BatchLatencyMeasurementResponse.class);
-            return objectMapper.writeValueAsString(result);
+            return objectMapper.writeValueAsString(result.getResponses());
         } catch (final IOException ex) {
             throw new ApplicationException(-2,
                 "An I/O error has occured while performing this operation: " + ex.getMessage(), ex);
