@@ -41,9 +41,10 @@ public class LatencyMeasurementServiceImpl implements LatencyMeasurementService 
      */
     @Override
     public String getRoundTripLatency(final String inputFile) throws ApplicationException {
-        LOG.info("Performing network latency tests using input file: {}", inputFile);
         try {
             final Path path = Paths.get(inputFile);
+            LOG.info("Performing network latency tests using input file: {}", path.toAbsolutePath());
+
             final List<String> lines = Files.readAllLines(path);
             final BatchLatencyMeasurementRequest request = new BatchLatencyMeasurementRequest();
             lines.stream().forEach(line -> {
