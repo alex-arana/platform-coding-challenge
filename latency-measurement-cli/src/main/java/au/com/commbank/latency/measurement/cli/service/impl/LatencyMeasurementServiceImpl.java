@@ -49,8 +49,7 @@ public class LatencyMeasurementServiceImpl implements LatencyMeasurementService 
             LOG.info("Performing network latency tests using input file: {}", path.toAbsolutePath());
 
             final List<String> lines = Files.readAllLines(path);
-            final BatchLatencyMeasurementRequest request = new BatchLatencyMeasurementRequest();
-            request.setParameters(lines.stream()
+            final BatchLatencyMeasurementRequest request = new BatchLatencyMeasurementRequest(lines.stream()
                 .map(url -> new LatencyMeasurementRequest(url, null))
                 .collect(collectingAndThen(toList(), Collections::unmodifiableList)));
 
