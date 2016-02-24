@@ -43,10 +43,7 @@ public class LatencyMeasurementEndpointConfiguration extends WebMvcConfigurerAda
     @Override
     public void configureMessageConverters(final List<HttpMessageConverter<?>> converters) {
         converters.add(new Jaxb2RootElementHttpMessageConverter());
-
-        final MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
-        jsonConverter.setObjectMapper(objectMapper());
-        converters.add(jsonConverter);
+        converters.add(new MappingJackson2HttpMessageConverter(objectMapper()));
     }
 
     /**
