@@ -42,13 +42,13 @@ public class LatencyMeasurementServiceImpl implements LatencyMeasurementService 
      * {@inheritDoc}
      */
     @Override
-    public String getRoundTripLatency(final String inputFile) throws IOException {
+    public String getRoundTripLatency(final String inputFile, final Integer iterations) throws IOException {
         final Path path = Paths.get(inputFile);
         LOG.info("Performing network latency tests using input file: {}", path.toAbsolutePath());
 
         final List<String> lines = Files.readAllLines(path);
         final BatchLatencyMeasurementRequest request = new BatchLatencyMeasurementRequest(lines.stream()
-            .map(url -> new LatencyMeasurementRequest(url, null))
+            .map(url -> new LatencyMeasurementRequest(url, iterations))
             .collect(collectingAndThen(toList(), Collections::unmodifiableList)));
 
         final String url = serviceBaseUrl + "/v1/latency/batchroundtrip";

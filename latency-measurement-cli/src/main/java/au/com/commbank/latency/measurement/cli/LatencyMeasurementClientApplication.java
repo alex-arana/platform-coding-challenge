@@ -58,7 +58,8 @@ public class LatencyMeasurementClientApplication implements CommandLineRunner {
     @Override
     public void run(final String... args) throws IOException {
         final String inputFile = environment.getProperty("input", DEFAULT_INPUT_FILE);
-        final String jsonString = latencyMeasurementService.getRoundTripLatency(inputFile);
+        final Integer iterations = environment.getProperty("iterations", Integer.class);
+        final String jsonString = latencyMeasurementService.getRoundTripLatency(inputFile, iterations);
         LOG.info("LatencyMeasurementService returned {}", jsonString);
 
         final Path outputFile = Paths.get(environment.getProperty("output", DEFAULT_OUTPUT_FILE));
