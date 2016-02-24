@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import au.com.commbank.latency.measurement.cli.ApplicationException;
 import au.com.commbank.latency.measurement.cli.service.LatencyMeasurementService;
 import au.com.commbank.platform.coding.challenge.schema.v1.dto.BatchLatencyMeasurementRequest;
 import au.com.commbank.platform.coding.challenge.schema.v1.dto.BatchLatencyMeasurementResponse;
@@ -43,23 +42,18 @@ public class LatencyMeasurementServiceImpl implements LatencyMeasurementService 
      * {@inheritDoc}
      */
     @Override
-    public String getRoundTripLatency(final String inputFile) throws ApplicationException {
-        try {
-            final Path path = Paths.get(inputFile);
-            LOG.info("Performing network latency tests using input file: {}", path.toAbsolutePath());
+    public String getRoundTripLatency(final String inputFile) throws IOException {
+        final Path path = Paths.get(inputFile);
+        LOG.info("Performing network latency tests using input file: {}", path.toAbsolutePath());
 
-            final List<String> lines = Files.readAllLines(path);
-            final BatchLatencyMeasurementRequest request = new BatchLatencyMeasurementRequest(lines.stream()
-                .map(url -> new LatencyMeasurementRequest(url, null))
-                .collect(collectingAndThen(toList(), Collections::unmodifiableList)));
+        final List<String> lines = Files.readAllLines(path);
+        final BatchLatencyMeasurementRequest request = new BatchLatencyMeasurementRequest(lines.stream()
+            .map(url -> new LatencyMeasurementRequest(url, null))
+            .collect(collectingAndThen(toList(), Collections::unmodifiableList)));
 
-            final String url = serviceBaseUrl + "/v1/latency/batchroundtrip";
-            final BatchLatencyMeasurementResponse result =
-                restTemplate.postForObject(url, request, BatchLatencyMeasurementResponse.class);
-            return objectMapper.writeValueAsString(result.getResponses());
-        } catch (final IOException ex) {
-            throw new ApplicationException(-2,
-                "An I/O error has occured while performing this operation: " + ex.getMessage(), ex);
-        }
+        final String url = serviceBaseUrl + "/v1/latency/batchroundtrip";
+        final BatchLatencyMeasurementResponse result =
+            restTemplate.postForObject(url, request, BatchLatencyMeasurementResponse.class);
+        return objectMapper.writeValueAsString(result.getResponses());
     }
 }
