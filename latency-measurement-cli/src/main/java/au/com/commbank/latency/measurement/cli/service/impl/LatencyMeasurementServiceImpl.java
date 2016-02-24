@@ -14,7 +14,7 @@ import javax.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestOperations;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import au.com.commbank.latency.measurement.cli.service.LatencyMeasurementService;
 import au.com.commbank.platform.coding.challenge.schema.v1.dto.BatchLatencyMeasurementRequest;
@@ -30,7 +30,7 @@ public class LatencyMeasurementServiceImpl implements LatencyMeasurementService 
     private static final Logger LOG = LoggerFactory.getLogger(lookup().lookupClass());
 
     @Inject
-    private RestTemplate restTemplate;
+    private RestOperations restOperations;
 
     @Inject
     private ObjectMapper objectMapper;
@@ -53,7 +53,7 @@ public class LatencyMeasurementServiceImpl implements LatencyMeasurementService 
 
         final String url = serviceBaseUrl + "/v1/latency/batchroundtrip";
         final BatchLatencyMeasurementResponse result =
-            restTemplate.postForObject(url, request, BatchLatencyMeasurementResponse.class);
+            restOperations.postForObject(url, request, BatchLatencyMeasurementResponse.class);
         return objectMapper.writeValueAsString(result.getResponses());
     }
 }
