@@ -1,6 +1,7 @@
 package au.com.commbank.latency.measurement.cli;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,7 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
-import com.google.common.base.Charsets;
 import au.com.commbank.latency.measurement.cli.service.LatencyMeasurementService;
 
 
@@ -64,7 +64,7 @@ public class LatencyMeasurementClientApplication implements CommandLineRunner {
         LOG.info("LatencyMeasurementService returned {}", jsonString);
 
         final Path outputFile = Paths.get(environment.getProperty("output", DEFAULT_OUTPUT_FILE));
-        Files.write(outputFile, jsonString.getBytes(Charsets.UTF_8));
+        Files.write(outputFile, jsonString.getBytes(StandardCharsets.UTF_8));
         LOG.info("Latency measurement results have been saved to file '{}'", outputFile.toAbsolutePath());
     }
 
